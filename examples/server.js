@@ -26,14 +26,32 @@ app.use(bodyParser.urlencoded({ extended: true }))
 
 const router = express.Router()
 
-router.get('/simple/get',function(req,res) {
+router.get('/simple/get', function(req, res) {
   res.json({
     msg: `hello world`
   })
 })
 
-router.get('/base/get',function(req,res) {
+router.get('/base/get', function(req, res) {
   res.json(req.query)
+})
+
+router.post('/base/post', function(req, res) {
+  res.json(req.body)
+})
+
+router.post('/base/buffer', function(req, res) {
+  let msg = []
+  // 不停的接受数据，并最终拼接输出
+  req.on('data', (chunk) => {
+    if (chunk) {
+      msg.push(chunk)
+    }
+  })
+  req.on('end', () => {
+    let buf = Buffer.concat(msg)
+    res.json(buf.toJSON())
+  })
 })
 
 app.use(router)

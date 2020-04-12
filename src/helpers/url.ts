@@ -1,4 +1,4 @@
-import { isDate, isObject } from './util'
+import { isDate, isPlainObject } from './util'
 
 /** 存放URL相关工具函数 */
 
@@ -43,7 +43,7 @@ export function buildURL(url: string, params?: any): string {
       if (isDate(val)) {
         // 因为有类型保护才可以使用Date的方法
         val = val.toISOString()
-      } else if (isObject(val)) {
+      } else if (isPlainObject(val)) {
         val = JSON.stringify(val)
       }
       parts.push(`${encode(key)}=${encode(val)}`)
