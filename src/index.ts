@@ -1,12 +1,14 @@
-import { AxiosPromise, AxiosRequestConfig } from './types'
+import { AxiosPromise, AxiosRequestConfig, AxiosResponse } from './types'
 import xhr from './xhr'
 import { buildURL } from './helpers/url'
-import { transfromRequest } from './helpers/data'
+import { transformRequest, transformResponse } from './helpers/data'
 import { processHeaders } from './helpers/headers'
 
 function axios(config: AxiosRequestConfig): AxiosPromise {
   processConfig(config)
-  return xhr(config)
+  return xhr(config).then((res) => {
+    return transformResponseData(res)
+  })
 }
 
 // 用于对传入的config做处理，不仅仅只是url的参数处理
@@ -23,13 +25,18 @@ function transformURL(config: AxiosRequestConfig): string {
 }
 
 function transformRequestData(config: AxiosRequestConfig): any {
-  return transfromRequest(config.data)
+  return transformRequest(config.data)
 }
 
-function transformHeaders(config: AxiosRequestConfig):any {
+function transformHeaders(config: AxiosRequestConfig): any {
   // config中有可能没有headers，所以设置一个默认值保证存在，因为processHeaders中
-  const {headers = {},data}  = config
-  return processHeaders(headers,data)
+  const { headers = {}, data } = config
+  return processHeaders(headers, data)
+}
+
+function transformResponseData(res: AxiosResponse): AxiosResponse {
+  res.data = transformResponse(res.data)
+  return res
 }
 
 export default axios

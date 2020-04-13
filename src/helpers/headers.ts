@@ -1,4 +1,5 @@
 import { isPlainObject } from './util'
+import { head } from 'shelljs'
 
 function normalizeHeaderName(headers:any,normalizedName:string):void {
   if (!headers) {
@@ -26,4 +27,26 @@ export function processHeaders(headers: any, data: any): any {
     }
   }
   return headers
+}
+
+export function parseHeaders(headers:string):any {
+  let parsed = Object.create(null)
+  if (!headers) {
+    return parsed
+  }
+
+  // 通过split按照回车和换行进行分割--获取每行字符串
+  headers.split('\r\n').forEach((line) => {
+    // :号解构赋值到数组
+    let [key, val] = line.split(':')
+    key = key.trim().toLowerCase()
+    if (!key) {
+      return
+    }
+    if (val) {
+      val = val.trim()
+    }
+    parsed[key] = val
+  })
+
 }
