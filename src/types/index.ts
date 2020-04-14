@@ -24,7 +24,9 @@ export interface AxiosRequestConfig {
   params?: any
   headers?: any
   // 定义一个响应数据类型
-  responseType:XMLHttpRequestResponseType
+  responseType?: XMLHttpRequestResponseType
+  // 定义超时时间
+  timeout?: number
 }
 
 export interface AxiosResponse {
@@ -40,4 +42,12 @@ export interface AxiosResponse {
 export interface AxiosPromise extends Promise<AxiosResponse> {
 
 
+}
+
+export interface AxiosError extends Error {
+  isAxiosError: boolean
+  config: AxiosRequestConfig
+  code?: string | null
+  request?: any
+  response?: AxiosResponse
 }
