@@ -2,7 +2,18 @@ import { AxiosPromise, AxiosRequestConfig, Method } from '../types'
 import dispatchRequest from './dispatchRequest'
 
 export default class Axios {
-  request(config: AxiosRequestConfig): AxiosPromise {
+  // 支持重载需要设置为any类型
+  request(url: any, config?: any): AxiosPromise {
+    // 需要进行参数判断来重载--url存在
+    if (typeof url === 'string') {
+      if (!config) {
+        config = {}
+      }
+      config.url = url
+    }else {
+      // 进入第一种情况，不存在url，只传入了一个config
+      config = url
+    }
     return dispatchRequest(config)
   }
 
