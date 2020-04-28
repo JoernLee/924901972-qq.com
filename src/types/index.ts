@@ -77,3 +77,20 @@ export interface AxiosInstance extends Axios {
 
   <T = any>(url: string, config?: AxiosRequestConfig): AxiosPromise<T>
 }
+
+export interface AxiosInterceptorManager<T> {
+  // 返回的ID用于标志和删除
+  use(resolved: ResolvedFn<T>, rejected: RejectedFn): number
+
+  eject(id:number):void
+}
+
+// 函数接口,返回可以是泛型或者Promise对象
+export interface ResolvedFn<T> {
+  (val: T): T | Promise<T>
+}
+
+// 函数接口，返回错误可能是任何类型
+export interface RejectedFn {
+  (error: any): any
+}
