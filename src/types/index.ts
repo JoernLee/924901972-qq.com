@@ -39,10 +39,7 @@ export interface AxiosResponse<T = any> {
 }
 
 // 定义Axios函数返回类型,现在需要返回一个promise对象
-export interface AxiosPromise<T = any> extends Promise<AxiosResponse> {
-
-
-}
+export interface AxiosPromise<T = any> extends Promise<AxiosResponse> {}
 
 export interface AxiosError extends Error {
   isAxiosError: boolean
@@ -53,6 +50,11 @@ export interface AxiosError extends Error {
 }
 
 export interface Axios {
+  interceptors: {
+    request: AxiosInterceptorManager<AxiosRequestConfig>
+    response: AxiosInterceptorManager<AxiosResponse>
+  }
+
   // 允许请求传入一个期望拿到的类型
   request<T = any>(config: AxiosRequestConfig): AxiosPromise<T>
 
@@ -80,9 +82,9 @@ export interface AxiosInstance extends Axios {
 
 export interface AxiosInterceptorManager<T> {
   // 返回的ID用于标志和删除
-  use(resolved: ResolvedFn<T>, rejected: RejectedFn): number
+  use(resolved: ResolvedFn<T>, rejected?: RejectedFn): number
 
-  eject(id:number):void
+  eject(id: number): void
 }
 
 // 函数接口,返回可以是泛型或者Promise对象
