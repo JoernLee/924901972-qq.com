@@ -27,6 +27,9 @@ export interface AxiosRequestConfig {
   responseType?: XMLHttpRequestResponseType
   // 定义超时时间
   timeout?: number
+
+  // 字符串索引签名
+  [propName: string]: any
 }
 
 export interface AxiosResponse<T = any> {
