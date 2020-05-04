@@ -8,6 +8,7 @@ import {
 } from '../types'
 import dispatchRequest from './dispatchRequest'
 import InterceptorManager from './interceptorManager'
+import mergeConfig from './mergeConfig'
 
 interface Interceptors {
   request: InterceptorManager<AxiosRequestConfig>
@@ -46,6 +47,8 @@ export default class Axios {
       // 进入第一种情况，不存在url，只传入了一个config
       config = url
     }
+
+    config = mergeConfig(this.defaults, config)
 
     // 加入链式调用逻辑
     const chain: PromiseChain<any>[] = [
