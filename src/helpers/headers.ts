@@ -1,7 +1,8 @@
-import { isPlainObject } from './util'
+import { deepMerge, isPlainObject } from './util'
 import { head } from 'shelljs'
+import { Method } from '../types'
 
-function normalizeHeaderName(headers:any,normalizedName:string):void {
+function normalizeHeaderName(headers: any, normalizedName: string): void {
   if (!headers) {
     return
   }
@@ -29,7 +30,7 @@ export function processHeaders(headers: any, data: any): any {
   return headers
 }
 
-export function parseHeaders(headers:string):any {
+export function parseHeaders(headers: string): any {
   let parsed = Object.create(null)
   if (!headers) {
     return parsed
@@ -47,6 +48,23 @@ export function parseHeaders(headers:string):any {
       val = val.trim()
     }
     parsed[key] = val
+  })
+
+}
+
+export function flattenHeaders(headers: any, method: Method) {
+  if (!headers) {
+    return headers
+  }
+
+  // 借助deepMerge方法,提取common字段以及key为方法的字段以及本身，扁平化
+  headers = deepMerge(headers.common, headers[method], headers)
+  // 需要删掉原先的不需要的字段
+  const methodsToDelete = ['delete', 'get', 'head', 'options', 'post'
+    , 'put', 'patch', 'common']
+
+  methodsToDelete.forEach(method => {
+    delete headers[method]
   })
 
 }
