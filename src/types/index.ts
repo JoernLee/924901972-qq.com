@@ -90,6 +90,11 @@ export interface AxiosInstance extends Axios {
   <T = any>(url: string, config?: AxiosRequestConfig): AxiosPromise<T>
 }
 
+// 定义一个静态接口-定义了函数字段
+export interface AxiosStatic extends AxiosInstance{
+  create(config?: AxiosRequestConfig): AxiosInstance
+}
+
 export interface AxiosInterceptorManager<T> {
   // 返回的ID用于标志和删除
   use(resolved: ResolvedFn<T>, rejected?: RejectedFn): number
