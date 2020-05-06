@@ -27,6 +27,10 @@ export interface AxiosRequestConfig {
   responseType?: XMLHttpRequestResponseType
   // 定义超时时间
   timeout?: number
+  // 配置函数
+  transformRequest?: AxiosTransformer | AxiosTransformer[]
+  transformResponse?: AxiosTransformer | AxiosTransformer[]
+
 
   // 字符串索引签名
   [propName: string]: any
@@ -42,7 +46,8 @@ export interface AxiosResponse<T = any> {
 }
 
 // 定义Axios函数返回类型,现在需要返回一个promise对象
-export interface AxiosPromise<T = any> extends Promise<AxiosResponse> {}
+export interface AxiosPromise<T = any> extends Promise<AxiosResponse> {
+}
 
 export interface AxiosError extends Error {
   isAxiosError: boolean
@@ -100,4 +105,8 @@ export interface ResolvedFn<T> {
 // 函数接口，返回错误可能是任何类型
 export interface RejectedFn {
   (error: any): any
+}
+
+export interface AxiosTransformer {
+  (data: any, headers?: any): any
 }

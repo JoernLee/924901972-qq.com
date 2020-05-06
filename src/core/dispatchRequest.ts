@@ -1,8 +1,8 @@
 import xhr from './xhr'
 import { AxiosPromise, AxiosRequestConfig, AxiosResponse } from '../types'
 import { buildURL } from '../helpers/url'
-import { transformRequest, transformResponse } from '../helpers/data'
-import { flattenHeaders, processHeaders } from '../helpers/headers'
+import { flattenHeaders } from '../helpers/headers'
+import transform from './transform'
 
 
 export default function axios(config: AxiosRequestConfig): AxiosPromise {
@@ -16,8 +16,10 @@ export default function axios(config: AxiosRequestConfig): AxiosPromise {
 function processConfig(config: AxiosRequestConfig): void {
   config.url = transformURL(config)
   // headers处理逻辑要放前面，因为transformData时候把data字段转化为字符串了，所以先处理header
-  config.headers = transformHeaders(config)
-  config.data = transformRequestData(config)
+  // config.headers = transformHeaders(config)
+  // config.data = transformRequestData(config)
+  // 使用transform函数重构
+  config.data = transform(config.data, config.headers, config.transformRequest)
   // 合并headers中字段---config处理时候运行时method一定存在
   config.headers = flattenHeaders(config.headers, config.method!)
 }
@@ -27,17 +29,8 @@ function transformURL(config: AxiosRequestConfig): string {
   return buildURL(url!, params)
 }
 
-function transformRequestData(config: AxiosRequestConfig): any {
-  return transformRequest(config.data)
-}
-
-function transformHeaders(config: AxiosRequestConfig): any {
-  // config中有可能没有headers，所以设置一个默认值保证存在，因为processHeaders中
-  const { headers = {}, data } = config
-  return processHeaders(headers, data)
-}
-
 function transformResponseData(res: AxiosResponse): AxiosResponse {
-  res.data = transformResponse(res.data)
+  // 使用transform重构
+  res.data = transform(res.data, res.headers, res.config.transformResponse)
   return res
 }
