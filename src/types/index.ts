@@ -133,3 +133,19 @@ export interface Canceler {
 export interface CancelExecutor {
   (cancel: Canceler): void
 }
+
+// 静态接口相关
+export interface CancelTokenSource {
+  token: CancelToken
+  cancel: Canceler
+}
+
+// 这个是CancelToken类的类型
+// 上面的CancelToken是类的实例类型
+export interface CancelTokenStatic {
+  // 构造函数类型
+  new(executor: CancelExecutor): CancelToken
+  // source方法的返回
+  source(): CancelTokenSource
+
+}

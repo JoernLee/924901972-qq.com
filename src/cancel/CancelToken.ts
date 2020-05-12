@@ -1,4 +1,4 @@
-import { CancelExecutor } from '../types'
+import { Canceler, CancelExecutor, CancelTokenSource } from '../types'
 
 interface ResolvePromise {
   (reason?: string): void
@@ -25,6 +25,20 @@ export default class CancelToken {
       this.reason = message
       resolvePromise(this.reason)
     })
-
   }
+
+  // 类似工厂方法
+  static source(): CancelTokenSource {
+    let cancel!:Canceler
+    const token = new CancelToken(c=>{
+      // 这个就相当于把上面的excutor赋值给cancel，一定有值
+      cancel = c
+    })
+    return {
+      // 上面赋值包着一层函数，无法推断，需要手动明确
+      cancel,
+      token
+    }
+  }
+
 }
