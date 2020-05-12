@@ -31,6 +31,8 @@ export interface AxiosRequestConfig {
   transformRequest?: AxiosTransformer | AxiosTransformer[]
   transformResponse?: AxiosTransformer | AxiosTransformer[]
 
+  // 取消
+  cancelToken?: CancelToken
 
   // 字符串索引签名
   [propName: string]: any
@@ -91,7 +93,7 @@ export interface AxiosInstance extends Axios {
 }
 
 // 定义一个静态接口-定义了函数字段
-export interface AxiosStatic extends AxiosInstance{
+export interface AxiosStatic extends AxiosInstance {
   create(config?: AxiosRequestConfig): AxiosInstance
 }
 
@@ -114,4 +116,20 @@ export interface RejectedFn {
 
 export interface AxiosTransformer {
   (data: any, headers?: any): any
+}
+
+export interface CancelToken {
+  promise: Promise<string>
+  // promise result中的参数
+  reason?: string
+}
+
+// 取消方法的接口
+export interface Canceler {
+  (message?: string): void
+}
+
+// 传给Token的构造函数参数类型
+export interface CancelExecutor {
+  (cancel: Canceler): void
 }

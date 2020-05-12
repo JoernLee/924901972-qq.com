@@ -5,7 +5,7 @@ import { createError } from '../helpers/error'
 export default function xhr(config: AxiosRequestConfig): AxiosPromise {
   return new Promise((resolve, reject) => {
     // 解构中赋值是默认值，没有传入的时候的值
-    const { data = null, url, method = 'get', headers, responseType, timeout } = config
+    const { data = null, url, method = 'get', headers, responseType, timeout, cancelToken } = config
 
     const request = new XMLHttpRequest()
 
@@ -62,6 +62,17 @@ export default function xhr(config: AxiosRequestConfig): AxiosPromise {
         request.setRequestHeader(name, headers[name])
       }
     })
+
+    // 加上取消的逻辑-cancelToken是CancelToken类实例
+    // 实例化的时候会执行构造逻辑，构造pending状态promise
+    // 接着立即调用方法，其中会把pending状态改为resolved状态，进而进入下面then逻辑
+    if (cancelToken) {
+      cancelToken.promise.then(reason => {
+        // 取消请求
+        request.abort()
+        reject(reason)
+      })
+    }
 
     request.send(data)
 
