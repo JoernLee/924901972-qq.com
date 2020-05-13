@@ -32,6 +32,13 @@ export default class CancelToken {
     })
   }
 
+  // 实现接口规定方法，当Cancel已存在，直接把message抛出作为异常Log
+  throwIfRequested(){
+    if (this.reason) {
+      throw this.reason
+    }
+  }
+
   // 类似工厂方法
   static source(): CancelTokenSource {
     let cancel!:Canceler

@@ -98,7 +98,7 @@ export interface AxiosStatic extends AxiosInstance {
 
   // 扩展静态属性
   CancelToken: CancelTokenStatic
-  Cancel:CancelStatic
+  Cancel: CancelStatic
   isCancel: (value: any) => boolean
 }
 
@@ -127,6 +127,9 @@ export interface CancelToken {
   promise: Promise<Cancel>
   // promise result中的参数
   reason?: Cancel
+
+  // 额外的逻辑
+  throwIfRequested(): void
 }
 
 // 取消方法的接口
