@@ -1,18 +1,22 @@
 import { Canceler, CancelExecutor, CancelTokenSource } from '../types'
 
+// 注意这里的Cancel要去Cancel文件里面去，不要去type文件中去取
+// 因为这个Cancel既需要当作值使用，也需要当作类型使用
+import Cancel from './Cancel'
+
 interface ResolvePromise {
-  (reason?: string): void
+  (reason?: Cancel): void
 }
 
 export default class CancelToken {
-  promise: Promise<string>
-  reason?: string
+  promise: Promise<Cancel>
+  reason?: Cancel
 
   constructor(executor: CancelExecutor) {
     let resolvePromise: ResolvePromise
 
     // 内部赋值了函数，这样稍后我们调用resolvePromise就相当于执行了resolve函数，改变pending为resolved状态
-    this.promise = new Promise<string>(resolve => {
+    this.promise = new Promise<Cancel>(resolve => {
       resolvePromise = resolve
     })
 
@@ -22,7 +26,8 @@ export default class CancelToken {
       if (this.reason) {
         return
       }
-      this.reason = message
+      // 这里就需要Cancel当作值去使用
+      this.reason = new Cancel(message)
       resolvePromise(this.reason)
     })
   }
