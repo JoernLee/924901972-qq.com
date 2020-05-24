@@ -1,6 +1,10 @@
 import { isDate, isPlainObject } from './util'
 
 /** 存放URL相关工具函数 */
+interface URLOrigin {
+  protocol: string
+  host: string
+}
 
 function encode(val: string): string {
   // 还需要处理一些特殊字符,将他们转化回来
@@ -62,4 +66,26 @@ export function buildURL(url: string, params?: any): string {
     url += (url.indexOf('?') === -1 ? '?' : '&') + serializedParams
   }
   return url
+}
+
+export function isURLSameOrigin(requestURL: string): boolean {
+  // 技巧：创建一个a标签，把url设置过去,然后就可以解构拿到参数
+  const parsedOrigin = resolveURL(requestURL)
+  return (parsedOrigin.protocol === currentOrigin.protocol && parsedOrigin.host === currentOrigin.host)
+}
+
+// 当前页面的源信息
+const currentOrigin = resolveURL(window.location.href)
+
+const urlParsingNode = document.createElement('a')
+
+function resolveURL(url: string): URLOrigin {
+
+  urlParsingNode.setAttribute('href', url)
+  const { protocol, host } = urlParsingNode
+
+  return {
+    protocol,
+    host
+  }
 }

@@ -37,6 +37,10 @@ export interface AxiosRequestConfig {
   // 跨域用
   withCredentials?:boolean
 
+  // XSRF用
+  xsrfCookieName?:string
+  xsrfHeaderName?:string
+
   // 字符串索引签名
   [propName: string]: any
 }

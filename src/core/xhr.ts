@@ -1,11 +1,24 @@
 import { AxiosPromise, AxiosRequestConfig, AxiosResponse } from '../types'
 import { parseHeaders } from '../helpers/headers'
 import { createError } from '../helpers/error'
+import { isURLSameOrigin } from '../helpers/url'
+import cookie from '../helpers/cookie'
 
 export default function xhr(config: AxiosRequestConfig): AxiosPromise {
   return new Promise((resolve, reject) => {
     // 解构中赋值是默认值，没有传入的时候的值
-    const { data = null, url, method = 'get', headers, responseType, timeout, cancelToken,withCredentials } = config
+    const {
+      data = null,
+      url,
+      method = 'get',
+      headers,
+      responseType,
+      timeout,
+      cancelToken,
+      withCredentials,
+      xsrfCookieName,
+      xsrfHeaderName
+    } = config
 
     const request = new XMLHttpRequest()
 
@@ -56,6 +69,15 @@ export default function xhr(config: AxiosRequestConfig): AxiosPromise {
 
     request.onerror = function handleError() {
       reject(createError('Network Error', config, null, request))
+    }
+
+    if ((withCredentials || isURLSameOrigin(url!)) && xsrfCookieName) {
+      // 条件满足可以读取cookie了
+      const xsrfValue = cookie.read(xsrfCookieName)
+      // 判断是否有效
+      if (xsrfValue && xsrfHeaderName) {
+        headers[xsrfHeaderName] = xsrfValue
+      }
     }
 
     Object.keys(headers).forEach((name) => {

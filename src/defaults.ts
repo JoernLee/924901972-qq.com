@@ -13,6 +13,10 @@ const defaults: AxiosRequestConfig = {
     }
   },
 
+  xsrfCookieName: 'XSRF-TOKEN',
+
+  xsrfHeaderName:'X-XSRF-TOKEN',
+
   transformRequest: [
     // 默认对请求的处理逻辑
     function(data: any, headers?: any): any {
