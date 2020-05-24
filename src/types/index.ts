@@ -34,6 +34,9 @@ export interface AxiosRequestConfig {
   // 取消
   cancelToken?: CancelToken
 
+  // 跨域用
+  withCredentials?:boolean
+
   // 字符串索引签名
   [propName: string]: any
 }
